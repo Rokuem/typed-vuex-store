@@ -1,10 +1,11 @@
 {
-  "name": "typedvuex",
+  "name": "typed-vuex-store",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "tsc"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +14,12 @@
     "vuex": "^3.1.2"
   },
   "devDependencies": {
-    "typescript": "^3.7.5"
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.6"
+  },
+  "peerDependencies": {
+    "vue": "2.x",
+    "vuex": "3.x"
   }
 }

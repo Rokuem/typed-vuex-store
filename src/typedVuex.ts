@@ -1,59 +1,10 @@
-import {
-  StoreOptions,
-  Store,
-  ActionTree,
-  MutationTree,
-  GetterTree,
-  ModuleTree
-} from 'vuex';
+import { Store } from 'vuex';
 import Vue from 'vue';
+import { typedVuexOptions } from './types/TypedVuexOptions.type';
+import { BundledStoreApi } from './types/BundledStoreApi.type';
+import { StoreApi } from './types/StoreApi.type';
+import { TreeToApi } from './types/TreeToApi.type';
 
-type TreeToApi<T extends StoreOptions<any>[keyof StoreOptions<any>]> = {
-  [key in keyof T]: T[key] extends (...args: [any, infer A]) => any
-    ? A extends undefined | null | unknown
-      ? () => ReturnType<T[key]>
-      : (payload: A) => ReturnType<T[key]>
-    : never;
-};
-
-type ApiToGetters<T extends TreeToApi<any>> = {
-  [key in keyof T]: ReturnType<T[key]>;
-};
-
-type StoreApi<O extends StoreOptions<any>> = {
-  state?: O['state'];
-  actions?: TreeToApi<O['actions']>;
-  mutations?: TreeToApi<O['mutations']>;
-  getters?: ApiToGetters<TreeToApi<O['getters']>>;
-  modules?: {
-    [key in keyof O['modules']]: StoreApi<O['modules'][key]>;
-  };
-};
-
-type typedVuexOptions<
-  S extends Record<string, any> = any,
-  A extends ActionTree<S, S> = any,
-  M extends MutationTree<S> = any,
-  G extends GetterTree<S, S> = any,
-  D extends ModuleTree<S> = any
-> = {
-  state?: S;
-  actions?: A;
-  mutations?: M;
-  getters?: G;
-  modules?: D;
-};
-
-type BundledStoreApi<O extends StoreOptions<any>> = Required<
-  {
-    [key in keyof StoreApi<O>]: Readonly<NonNullable<StoreApi<O>[key]>> &
-      {
-        [module in keyof O['modules']]: NonNullable<
-          StoreApi<O['modules'][module]>[key]
-        >;
-      };
-  }
->;
 export class TypedVuexStore<
   O extends typedVuexOptions,
   B extends BundledStoreApi<O>
@@ -67,12 +18,20 @@ export class TypedVuexStore<
       namespaced?: boolean;
     };
   } = {} as any;
+  public store: Store<O['state']>;
 
-  public constructor(public store: Store<O['state']>, options: O) {
-    this.state = store.state || {};
+  public constructor(options: O) {
+    this.store = new Store(options);
+    this.state = this.store.state || {};
     this.parseOptions(options);
   }
 
+  /**
+   * Use the provided options to construct the api.
+   *
+   * @param options - Typed vuex options.
+   * @param prefix - Prefix of the keys in the original vuex store. Used for namespaced modules.
+   */
   private parseOptions<T extends typedVuexOptions>(options: T, prefix = '') {
     if ('getters' in options) {
       this.createGetters(options.getters, prefix);
@@ -96,6 +55,9 @@ export class TypedVuexStore<
     }
   }
 
+  /**
+   * Assign a module key to the same api key.
+   */
   private assignModule(
     key: keyof TypedVuexStore<O, BundledStoreApi<O>>,
     prefix: string,
