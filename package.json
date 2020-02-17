@@ -10,6 +10,13 @@
   "scripts": {
     "prepublish": "tsc"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rokuem/typed-vuex-store.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Rokuem/typed-vuex-store"
+  },
   "author": {
     "name": "Mateus Amorim",
     "email": "mateusamorim2@gmail.com"
