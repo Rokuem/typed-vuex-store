@@ -1,5 +1,6 @@
 import { Store } from 'vuex';
 import Vue from 'vue';
+import Vuex from 'vuex';
 import { typedVuexOptions } from './types/TypedVuexOptions.type';
 import { BundledStoreApi } from './types/BundledStoreApi.type';
 import { StoreApi } from './types/StoreApi.type';
@@ -21,6 +22,7 @@ export class TypedVuexStore<
   public store: Store<O['state']>;
 
   public constructor(options: O) {
+    Vue.use(Vuex);
     this.store = new Store(options);
     this.state = this.store.state || {};
     this.parseOptions(options);
