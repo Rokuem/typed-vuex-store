@@ -7,8 +7,6 @@ A simple solution for vuex and typescript. Typed-vuex-store converts all the sto
 Provided that all the options have inferred types, all you need to do is setup the store like this:
 
 ```typescript
-Vue.use(Vuex);
-
 export const storeApi = new TypedVuexStore({
   state,
   actions,
