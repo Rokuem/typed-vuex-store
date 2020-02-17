@@ -56,4 +56,5 @@ This helper will make sure the mutations, actions and getters are ok to be used 
 
 ## Limitations
 
+- No support for optional payloads for now.
 - Does not register what is not provided in the options.
