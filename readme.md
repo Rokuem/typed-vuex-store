@@ -39,7 +39,7 @@ A problem that can happen is when using things like MutationTree, ActionTree or 
 To help with that, you can use the TypedStoreHelper:
 
 ```typescript
-const typed = new TypedStoreHelper(state, rootState);
+const typed = new TypedStoreHelper<typeof state, typeof rootState>();
 
 const mutations = typed.mutations({
   // mutation tree...

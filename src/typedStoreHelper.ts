@@ -5,10 +5,8 @@ import { MutationTree, ActionTree, GetterTree } from 'vuex';
  */
 export class TypedStoreHelper<
   S extends Record<string, any>,
-  R extends Record<string, any>
+  R extends Record<string, any> = {}
 > {
-  constructor(state: S, rootState: R) {}
-
   mutations = <T extends MutationTree<S>>(mutations: T) => {
     return mutations;
   };
