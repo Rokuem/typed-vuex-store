@@ -8,6 +8,14 @@ npm i -S typed-vuex-store
 
 A simple solution for vuex and typescript. Typed-vuex-store converts all the store actions, mutations, getters and modules to a object to make it typeSafe and easier to use.
 
+# Benefits
+
+- JsDocs is kept when the store is converted to a typedStore API.
+- All of the API creation is automatic so it isn't hard to implement.
+- "Go to reference" goes directly to the action/mutation/getter definition.
+- Rename symbol support between store files.
+- Intellisense for actions/mutations/getters.
+
 ## Creating the store
 
 Provided that all the options have inferred types, all you need to do is setup the store like this:
@@ -60,10 +68,3 @@ const mutations = typed.mutations({
 ```
 
 This helper will make sure the mutations, actions and getters are ok to be used for the typed store api.
-
-## How does it compare to vuex-typescript?
-
-- JsDocs is kept when the store is converted to a typedStore API.
-- No need to use `this.$store` when calling mutations and actions.
-- All of the API creation is automatic.
-- "Go to reference" goes directly to the action/mutation/getter
