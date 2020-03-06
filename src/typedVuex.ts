@@ -78,7 +78,14 @@ export class TypedVuexStore<
       }, this[key]);
     }
 
-    Object.assign(assignTarget, toAssign);
+    for (let key in toAssign) {
+      Object.defineProperty(assignTarget, key, {
+        get() {
+          return toAssign[key];
+        },
+        enumerable: true
+      });
+    }
   }
 
   private createMutations<T extends typedVuexOptions['mutations']>(
@@ -122,11 +129,8 @@ export class TypedVuexStore<
     for (const key in getters) {
       Object.defineProperty(result, key, {
         get: () => {
-          if (prefix) {
-            const prefixedKey = prefix + key;
-            return this.store.getters[prefixedKey];
-          }
-          return this.store.getters[key];
+          const prefixedKey = prefix + key;
+          return this.store.getters[prefixedKey];
         },
         enumerable: true
       });
