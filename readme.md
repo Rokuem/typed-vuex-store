@@ -66,7 +66,7 @@ const createMutations = <
   T extends MutationTree<typeof state, typeof rootState>
 >(
   options: T
-) => T;
+) => options;
 
 const mutations = createMutations({
   // mutation tree...
@@ -80,13 +80,14 @@ you can also do something similar for the actions and getters.
 ## V1 Changes
 
 - Added tests
-- Fixed namespaced modules logic
-- Fixed Promise type for actions
-- Fixed typing of submodules
+- Fixed namespaced modules logic.
+- Fixed Promise type for actions.
+- Fixed typing of submodules.
 - Adjusted the `store.mutations.module.mutation` format to `store.module.mutations.mutation` to make it easier to use (same thing for state, actions and getters).
-- Modules are accessed directly from the store now
+- Modules are accessed directly from the store now.
 
 ## V1.1 Changes
 
-- Improve tests
-- Add better payload resolution
+- Improve tests.
+- Add better payload resolution.
+- Fix typos in the documentation.
