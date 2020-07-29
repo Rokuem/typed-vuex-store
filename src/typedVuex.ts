@@ -1,31 +1,16 @@
-import { Store } from 'vuex';
 import Vue from 'vue';
-import Vuex from 'vuex';
-import { typedVuexOptions } from './types/TypedVuexOptions.type';
-import { BundledStoreApi } from './types/BundledStoreApi.type';
-import { StoreApi } from './types/StoreApi.type';
-import { TreeToApi } from './types/TreeToApi.type';
+import Vuex, { StoreOptions } from 'vuex';
+import { TypedStore } from './types/TypedStore';
 
-export class TypedVuexStore<
-  O extends typedVuexOptions,
-  B extends BundledStoreApi<O>
-> {
-  public state: B['state'] = {} as any;
-  public actions: B['actions'] = {} as any;
-  public mutations: B['mutations'] = {} as any;
-  public getters: B['getters'] = {} as any;
-  private modules: {
-    [key in keyof O['modules']]: StoreApi<O['modules'][key]> & {
-      namespaced?: boolean;
-    };
-  } = {} as any;
-  public store: Store<O['state']>;
+class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
+  public store = new Vuex.Store({});
+  public state: O['state'];
 
   public constructor(options: O) {
     Vue.use(Vuex);
-    this.store = new Store(options);
+    this.store = new Vuex.Store(options);
     this.state = this.store.state || {};
-    this.parseOptions(options);
+    this.parseOptions(this, options, '');
   }
 
   /**
@@ -34,108 +19,92 @@ export class TypedVuexStore<
    * @param options - Typed vuex options.
    * @param prefix - Prefix of the keys in the original vuex store. Used for namespaced modules.
    */
-  private parseOptions<T extends typedVuexOptions>(options: T, prefix = '') {
-    if ('getters' in options) {
-      this.createGetters(options.getters, prefix);
+  private parseOptions<T extends StoreOptions<any>>(
+    target: Record<string, any>,
+    origin: T,
+    prefix = ''
+  ) {
+    if ('state' in origin) {
+      this.createState(target, origin);
     }
 
-    if ('actions' in options) {
-      this.createActions(options.actions, prefix);
+    if ('getters' in origin) {
+      this.createGetters(target, origin, prefix);
     }
 
-    if ('mutations' in options) {
-      this.createMutations(options.mutations, prefix);
+    if ('actions' in origin) {
+      this.createActions(target, origin, prefix);
     }
 
-    if ('modules' in options) {
-      for (const key in options.modules) {
+    if ('mutations' in origin) {
+      this.createMutations(target, origin, prefix);
+    }
+
+    if ('modules' in origin) {
+      for (const key in origin.modules) {
+        target[key] = target[key] || {};
         this.parseOptions(
-          options.modules[key],
-          prefix + options.modules[key].namespaced ? key + '/' : ''
+          target[key],
+          origin.modules[key],
+          prefix + (origin.modules[key].namespaced === false ? '' : key + '/')
         );
       }
     }
   }
 
-  /**
-   * Assign a module key to the same api key.
-   */
-  private assignModule(
-    key: keyof TypedVuexStore<O, BundledStoreApi<O>>,
-    prefix: string,
-    toAssign: Record<string, any>
-  ) {
-    let assignTarget = this[key];
-
-    if (prefix) {
-      const prefixKeys = prefix.split('/').slice(0, -1);
-      assignTarget = prefixKeys.reduce((a: any, b: any) => {
-        if (!a[b]) {
-          a[b] = {};
-        }
-
-        return a[b];
-      }, this[key]);
-    }
-
-    for (let key in toAssign) {
-      Object.defineProperty(assignTarget, key, {
-        get() {
-          return toAssign[key];
-        },
-        enumerable: true
-      });
-    }
+  private createState<
+    T extends StoreOptions<any>,
+    Origin extends Record<string, any>
+  >(target: T, origin: Origin) {
+    target.state = origin.state;
   }
 
-  private createMutations<T extends typedVuexOptions['mutations']>(
-    mutations: T,
-    prefix = ''
-  ) {
-    const result: Partial<TreeToApi<T>> = {};
+  private createMutations<
+    T extends StoreOptions<any>,
+    Origin extends Record<string, any>
+  >(target: T, origin: Origin, prefix = '') {
+    target.mutations = target.mutations || {};
 
-    for (const key in mutations) {
-      (result as any)[key] = (payload?: any) =>
+    for (const key in origin.mutations) {
+      target.mutations[key] = (payload?: any) =>
         this.store.commit(prefix + key, payload);
     }
-
-    if (prefix) {
-      const prefixKeys = prefix.split('/');
-    }
-
-    this.assignModule('mutations', prefix, result);
   }
 
-  private createActions<T extends typedVuexOptions['actions']>(
-    actions: T,
-    prefix = ''
-  ) {
-    const result: Partial<TreeToApi<T>> = {};
+  private createActions<
+    T extends StoreOptions<any>,
+    Origin extends Record<string, any>
+  >(target: T, origin: Origin, prefix = '') {
+    target.actions = target.actions || {};
 
-    for (const key in actions) {
-      (result as any)[key] = (payload?: any) =>
+    for (const key in origin.actions) {
+      target.actions[key] = (payload?: any) =>
         this.store.dispatch(prefix + key, payload);
     }
-
-    this.assignModule('actions', prefix, result);
   }
 
-  private createGetters<T extends typedVuexOptions['getters']>(
-    getters: T,
-    prefix = ''
-  ) {
-    const result: Partial<TreeToApi<T>> = {};
+  private createGetters<
+    T extends StoreOptions<any>,
+    Origin extends Record<string, any>
+  >(target: T, origin: Origin, prefix = '') {
+    target.getters = target.getters || {};
 
-    for (const key in getters) {
-      Object.defineProperty(result, key, {
+    for (const key in origin.getters) {
+      Object.defineProperty(target.getters, key, {
         get: () => {
           const prefixedKey = prefix + key;
           return this.store.getters[prefixedKey];
         },
-        enumerable: true
+        enumerable: true,
+        configurable: true,
       });
     }
-
-    this.assignModule('getters', prefix, result);
   }
 }
+
+interface StoreApi {
+  new <O extends StoreOptions<any>>(options: O): TypedStore<O> &
+    TypedVuexStoreConstructor<O>;
+}
+
+export const TypedVuexStore = (TypedVuexStoreConstructor as any) as StoreApi;

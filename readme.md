@@ -29,13 +29,13 @@ export const storeApi = new TypedVuexStore({
   mutations,
   getters,
   modules: {
-    moduleA
-  }
+    moduleA,
+  },
   // other vuex store options...
 });
 
 const vueApp = new Vue({
-  store: storeApi.store
+  store: storeApi.store,
   //...
 });
 ```
@@ -43,28 +43,45 @@ const vueApp = new Vue({
 Then use it like this in the app/actions/mutations:
 
 ```typescript
-const someVar = storeApi.state.someModule.bob;
-const someVar2 = storeApi.getters.someModule.bob;
+storeApi.state.bob;
+storeApi.someModule.state.bob;
+storeApi.someModule.getters.bob;
 await storeApi.actions.doSomething();
 await storeApi.actions.doSomething(payload);
-await storeApi.actions.someModule.doSomething(payload);
+await storeApi.someModule.actions.doSomething(payload);
 storeApi.mutations.doSomething(payload);
+storeApi.someModule.mutations.doSomething(payload);
 ```
 
 ### Options inferred types
 
 When using things like MutationTree, ActionTree or GetterTree in a `const myVar: type` format the type will not be inferred correctly.
 
-To help with that, you can use the TypedStoreHelper:
+To help with that, you can use a function:
 
 ```typescript
-import { TypedStoreHelper } from 'typed-vuex-store';
+import { MutationTree } from 'vuex';
 
-const typed = new TypedStoreHelper<typeof state, typeof rootState>();
+const createMutations = <
+  T extends MutationTree<typeof state, typeof rootState>
+>(
+  options: T
+) => T;
 
-const mutations = typed.mutations({
+const mutations = createMutations({
   // mutation tree...
 });
 ```
 
-This helper will make sure the mutations, actions and getters are ok to be used for the typed store api.
+This will make sure the mutations are ok to be used for the typed store api.
+
+you can also do something similar for the actions and getters.
+
+# V1 Changes
+
+- Added tests
+- Fixed namespaced modules logic
+- Fixed Promise type for actions
+- Fixed typing of submodules
+- Adjusted the `store.mutations.module.mutation` format to `store.module.mutations.mutation` to make it easier to use (same thing for state, actions and getters).
+- Modules are accessed directly from the store now
