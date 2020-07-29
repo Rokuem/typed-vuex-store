@@ -77,7 +77,7 @@ This will make sure the mutations are ok to be used for the typed store api.
 
 you can also do something similar for the actions and getters.
 
-# V1 Changes
+## V1 Changes
 
 - Added tests
 - Fixed namespaced modules logic
@@ -85,3 +85,8 @@ you can also do something similar for the actions and getters.
 - Fixed typing of submodules
 - Adjusted the `store.mutations.module.mutation` format to `store.module.mutations.mutation` to make it easier to use (same thing for state, actions and getters).
 - Modules are accessed directly from the store now
+
+## V1.1 Changes
+
+- Improve tests
+- Add better payload resolution

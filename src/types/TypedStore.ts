@@ -1,5 +1,7 @@
 import { StoreOptions } from 'vuex';
 
+type Promised<T> = T extends Promise<any> ? T : Promise<T>;
+
 export type TypedStore<T extends StoreOptions<any>> = {
   state: T['state'];
   getters: {
@@ -11,27 +13,29 @@ export type TypedStore<T extends StoreOptions<any>> = {
   };
   mutations: {
     [key in keyof T['mutations']]: T['mutations'][key] extends (
-      a: any,
-      b: infer P
-    ) => infer R
-      ? (payload: P) => R
-      : T['mutations'][key] extends (a: any) => infer R
-      ? () => R
-      : never;
+      ...args: infer Params
+    ) => infer Result
+      ? Params extends [state: any, payload: infer Payload]
+      ? (payload: Payload) => Result
+      : Params extends [state: any, payload?: never]
+      ? () => Result
+      : Params extends [state: any, payload?: infer P]
+      ? (payload?: P) => Result
+      : () => Result
+      : never
   };
   actions: {
     [key in keyof T['actions']]: T['actions'][key] extends (
-      a: any,
-      b: infer P
-    ) => infer R
-      ? R extends Promise<any>
-        ? (payload: P) => R
-        : (payload: P) => Promise<R>
-      : T['actions'][key] extends (a: any) => infer R
-      ? R extends Promise<any>
-        ? () => R
-        : () => Promise<R>
-      : never;
+      ...args: infer Params
+    ) => infer Result 
+      ? Params extends [ctx: any, payload: infer Payload]
+      ? (payload: Payload) => Promised<Result>
+      : Params extends [ctx: any, payload?: never]
+      ? () => Promised<Result> 
+      : Params extends [ctx: any, payload?: infer P]
+      ? (payload?: P) => Promised<Result>
+      : () => Promised<Result>
+      : never
   };
 } & {
   [key in keyof T['modules']]: TypedStore<T['modules'][key]>;

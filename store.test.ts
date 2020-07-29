@@ -21,13 +21,31 @@ const storeOptions = createOptions({
     },
   },
   actions: {
-    callA(ctx: any, payload: number) {
+    callA(ctx, payload: number) {
+      return '';
+    },
+    callB(ctx) {
+      return '';
+    },
+    callC(ctx, payload?: number) {
+      return '';
+    },
+    callD() {
       return '';
     },
   },
   mutations: {
     setA(state: any, payload: number) {
       state.a = payload;
+    },
+    setB(state: any) {
+      state.a = 5;
+    },
+    setC(state: any, payload?: number) {
+      state.a = payload;
+    },
+    setD() {
+      console.log('a');
     },
   },
   modules: {
@@ -59,6 +77,7 @@ const storeOptions = createOptions({
   },
 });
 
+
 const store = new TypedVuexStore(storeOptions);
 
 describe('typedVuexStore', () => {
@@ -84,8 +103,11 @@ describe('typedVuexStore', () => {
   describe('Mutations', () => {
     test('Types should reflect the values', () => {
       expectTypeOf(store.mutations.setA).parameters.toEqualTypeOf([5] as [
-        number
+        payload: number
       ]);
+      expectTypeOf(store.mutations.setB).parameters.toEqualTypeOf([] as []);
+      expectTypeOf(store.mutations.setC).parameters.toEqualTypeOf([5] as [payload?: number]);
+      expectTypeOf(store.mutations.setD).parameters.toEqualTypeOf([] as []);
     });
 
     test('Should affect the store correctly', () => {
@@ -124,6 +146,15 @@ describe('typedVuexStore', () => {
   describe('Actions', () => {
     test('Should be a promise', () => {
       expect(store.actions.callA(5)).toHaveProperty('then');
+    });
+
+    test('Should type the parameters correctly', () => {
+      expectTypeOf(store.actions.callA).parameters.toEqualTypeOf([5] as [
+        payload: number
+      ]);
+      expectTypeOf(store.actions.callB).parameters.toEqualTypeOf([] as []);
+      expectTypeOf(store.actions.callC).parameters.toEqualTypeOf([5] as [payload?: number]);
+      expectTypeOf(store.actions.callD).parameters.toEqualTypeOf([] as []);
     });
   });
 });
