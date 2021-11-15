@@ -1,6 +1,6 @@
 {
   "name": "typed-vuex-store",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "A easy and typeSafe way to use vuex",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
@@ -24,8 +24,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "vue": "^2.6.11",
-    "vuex": "^3.1.2"
+    "vue": "^3.2.22",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.7",

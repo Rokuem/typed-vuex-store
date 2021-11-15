@@ -1,16 +1,14 @@
-import Vue from 'vue';
-import Vuex, { StoreOptions } from 'vuex';
-import { TypedStore } from './types/TypedStore';
+import { createStore, StoreOptions } from "vuex";
+import { TypedStore } from "./types/TypedStore";
 
 class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
-  public store = new Vuex.Store({});
-  public state: O['state'];
+  public store = createStore({});
+  public state: O["state"];
 
   public constructor(options: O) {
-    Vue.use(Vuex);
-    this.store = new Vuex.Store(options);
+    this.store = createStore(options);
     this.state = this.store.state || {};
-    this.parseOptions(this, options, '');
+    this.parseOptions(this, options, "");
   }
 
   /**
@@ -22,31 +20,31 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
   private parseOptions<T extends StoreOptions<any>>(
     target: Record<string, any>,
     origin: T,
-    prefix = ''
+    prefix = ""
   ) {
-    if ('state' in origin) {
+    if ("state" in origin) {
       this.createState(target, origin);
     }
 
-    if ('getters' in origin) {
+    if ("getters" in origin) {
       this.createGetters(target, origin, prefix);
     }
 
-    if ('actions' in origin) {
+    if ("actions" in origin) {
       this.createActions(target, origin, prefix);
     }
 
-    if ('mutations' in origin) {
+    if ("mutations" in origin) {
       this.createMutations(target, origin, prefix);
     }
 
-    if ('modules' in origin) {
+    if ("modules" in origin) {
       for (const key in origin.modules) {
         target[key] = target[key] || {};
         this.parseOptions(
           target[key],
           origin.modules[key],
-          prefix + (origin.modules[key].namespaced === false ? '' : key + '/')
+          prefix + (origin.modules[key].namespaced === false ? "" : key + "/")
         );
       }
     }
@@ -62,7 +60,7 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
   private createMutations<
     T extends StoreOptions<any>,
     Origin extends Record<string, any>
-  >(target: T, origin: Origin, prefix = '') {
+  >(target: T, origin: Origin, prefix = "") {
     target.mutations = target.mutations || {};
 
     for (const key in origin.mutations) {
@@ -74,7 +72,7 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
   private createActions<
     T extends StoreOptions<any>,
     Origin extends Record<string, any>
-  >(target: T, origin: Origin, prefix = '') {
+  >(target: T, origin: Origin, prefix = "") {
     target.actions = target.actions || {};
 
     for (const key in origin.actions) {
@@ -86,7 +84,7 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
   private createGetters<
     T extends StoreOptions<any>,
     Origin extends Record<string, any>
-  >(target: T, origin: Origin, prefix = '') {
+  >(target: T, origin: Origin, prefix = "") {
     target.getters = target.getters || {};
 
     for (const key in origin.getters) {
@@ -107,4 +105,4 @@ interface StoreApi {
     TypedVuexStoreConstructor<O>;
 }
 
-export const TypedVuexStore = (TypedVuexStoreConstructor as any) as StoreApi;
+export const TypedVuexStore = TypedVuexStoreConstructor as any as StoreApi;

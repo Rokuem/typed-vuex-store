@@ -1,1 +1,2 @@
-export { TypedVuexStore } from './typedVuex';
+export * from "./helpers";
+export * from "./typedVuex";

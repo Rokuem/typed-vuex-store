@@ -1,9 +1,6 @@
 import vuex, { StoreOptions } from 'vuex';
-import Vue from 'vue';
 import { TypedVuexStore } from './src/typedVuex';
 import { expectTypeOf } from 'expect-type';
-
-Vue.use(vuex);
 
 const createOptions = <O extends StoreOptions<any>>(options: O) => options;
 
