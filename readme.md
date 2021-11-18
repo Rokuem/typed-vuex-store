@@ -1,7 +1,7 @@
 # Installation
 
 ```bash
-npm i -S typed-vuex-store
+npm i -S typed-vuex-store vuex@4
 ```
 
 # About typed-vuex-store
