@@ -3,11 +3,10 @@ import { TypedStore } from "./types/TypedStore";
 
 class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
   public store = createStore({});
-  public state: O["state"];
+  public state!: O["state"];
 
   public constructor(options: O) {
     this.store = createStore(options);
-    this.state = this.store.state || {};
     this.parseOptions(this, options, "");
   }
 
@@ -54,7 +53,11 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
     T extends StoreOptions<any>,
     Origin extends Record<string, any>
   >(target: T, origin: Origin) {
-    target.state = origin.state;
+    Object.defineProperty(target, "state", {
+      get() {
+        return origin.state;
+      },
+    });
   }
 
   private createMutations<
