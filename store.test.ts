@@ -1,6 +1,6 @@
-import vuex, { StoreOptions } from 'vuex';
-import { TypedVuexStore } from './src/typedVuex';
-import { expectTypeOf } from 'expect-type';
+import vuex, { StoreOptions } from "vuex";
+import { TypedVuexStore } from "./src/typedVuex";
+import { expectTypeOf } from "expect-type";
 
 const createOptions = <O extends StoreOptions<any>>(options: O) => options;
 
@@ -19,16 +19,16 @@ const storeOptions = createOptions({
   },
   actions: {
     callA(ctx, payload: number) {
-      return '';
+      return "";
     },
     callB(ctx) {
-      return '';
+      return "";
     },
     callC(ctx, payload?: number) {
-      return '';
+      return "";
     },
     callD() {
-      return '';
+      return "";
     },
   },
   mutations: {
@@ -42,7 +42,7 @@ const storeOptions = createOptions({
       state.a = payload;
     },
     setD() {
-      console.log('a');
+      console.log("a");
     },
   },
   modules: {
@@ -60,7 +60,7 @@ const storeOptions = createOptions({
         module2: {
           namespaced: true,
           state: {
-            ooo: '',
+            ooo: "",
             b: 5,
           },
           mutations: {
@@ -74,12 +74,11 @@ const storeOptions = createOptions({
   },
 });
 
-
 const store = new TypedVuexStore(storeOptions);
 
-describe('typedVuexStore', () => {
-  describe('State', () => {
-    test('Types should reflect the values', () => {
+describe("typedVuexStore", () => {
+  describe("State", () => {
+    test("Types should reflect the values", () => {
       expectTypeOf(store.state).toEqualTypeOf(storeOptions.state);
       expect(store.state).toEqual(storeOptions.state);
 
@@ -92,22 +91,24 @@ describe('typedVuexStore', () => {
         storeOptions.modules.module1.modules.module2.state
       );
       expect(store.module1.module2.state).toEqual(
-        storeOptions.modules.module1.modules.module2.state
+        (store.store.state as any).module1.module2
       );
     });
   });
 
-  describe('Mutations', () => {
-    test('Types should reflect the values', () => {
+  describe("Mutations", () => {
+    test("Types should reflect the values", () => {
       expectTypeOf(store.mutations.setA).parameters.toEqualTypeOf([5] as [
         payload: number
       ]);
       expectTypeOf(store.mutations.setB).parameters.toEqualTypeOf([] as []);
-      expectTypeOf(store.mutations.setC).parameters.toEqualTypeOf([5] as [payload?: number]);
+      expectTypeOf(store.mutations.setC).parameters.toEqualTypeOf([5] as [
+        payload?: number
+      ]);
       expectTypeOf(store.mutations.setD).parameters.toEqualTypeOf([] as []);
     });
 
-    test('Should affect the store correctly', () => {
+    test("Should affect the store correctly", () => {
       const value = 8;
       store.mutations.setA(value);
       expect(store.state.a).toBe(value);
@@ -127,12 +128,12 @@ describe('typedVuexStore', () => {
     });
   });
 
-  describe('Getters', () => {
-    test('should have the correct type', () => {
+  describe("Getters", () => {
+    test("should have the correct type", () => {
       expectTypeOf(store.getters.numberGetter).toBeNumber();
     });
 
-    test('Should update correctly', () => {
+    test("Should update correctly", () => {
       expect(store.getters.sumAB).toBe(store.state.a + store.state.b);
       store.mutations.setA(100);
       expect(store.state.a).toBe(100);
@@ -140,17 +141,19 @@ describe('typedVuexStore', () => {
     });
   });
 
-  describe('Actions', () => {
-    test('Should be a promise', () => {
-      expect(store.actions.callA(5)).toHaveProperty('then');
+  describe("Actions", () => {
+    test("Should be a promise", () => {
+      expect(store.actions.callA(5)).toHaveProperty("then");
     });
 
-    test('Should type the parameters correctly', () => {
+    test("Should type the parameters correctly", () => {
       expectTypeOf(store.actions.callA).parameters.toEqualTypeOf([5] as [
         payload: number
       ]);
       expectTypeOf(store.actions.callB).parameters.toEqualTypeOf([] as []);
-      expectTypeOf(store.actions.callC).parameters.toEqualTypeOf([5] as [payload?: number]);
+      expectTypeOf(store.actions.callC).parameters.toEqualTypeOf([5] as [
+        payload?: number
+      ]);
       expectTypeOf(store.actions.callD).parameters.toEqualTypeOf([] as []);
     });
   });

@@ -7,6 +7,11 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
 
   public constructor(options: O) {
     this.store = createStore(options);
+    Object.defineProperty(this, "state", {
+      get() {
+        return this.store.state || {};
+      },
+    });
     this.parseOptions(this, options, "");
   }
 
@@ -17,33 +22,33 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
    * @param prefix - Prefix of the keys in the original vuex store. Used for namespaced modules.
    */
   private parseOptions<T extends StoreOptions<any>>(
-    target: Record<string, any>,
-    origin: T,
+    api: Record<string, any>,
+    options: T,
     prefix = ""
   ) {
-    if ("state" in origin) {
-      this.createState(target, origin);
+    if ("state" in options) {
+      this.createState(api, options, prefix);
     }
 
-    if ("getters" in origin) {
-      this.createGetters(target, origin, prefix);
+    if ("getters" in options) {
+      this.createGetters(api, options, prefix);
     }
 
-    if ("actions" in origin) {
-      this.createActions(target, origin, prefix);
+    if ("actions" in options) {
+      this.createActions(api, options, prefix);
     }
 
-    if ("mutations" in origin) {
-      this.createMutations(target, origin, prefix);
+    if ("mutations" in options) {
+      this.createMutations(api, options, prefix);
     }
 
-    if ("modules" in origin) {
-      for (const key in origin.modules) {
-        target[key] = target[key] || {};
+    if ("modules" in options) {
+      for (const key in options.modules) {
+        api[key] = api[key] || {};
         this.parseOptions(
-          target[key],
-          origin.modules[key],
-          prefix + (origin.modules[key].namespaced === false ? "" : key + "/")
+          api[key],
+          options.modules[key],
+          prefix + (options.modules[key].namespaced === false ? "" : key + "/")
         );
       }
     }
@@ -52,10 +57,20 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
   private createState<
     T extends StoreOptions<any>,
     Origin extends Record<string, any>
-  >(target: T, origin: Origin) {
+  >(target: T, origin: Origin, prefix: string) {
+    if ("state" in target) return;
+
     Object.defineProperty(target, "state", {
-      get() {
-        return origin.state;
+      get: () => {
+        let state = this.store.state;
+
+        if (!prefix) return state;
+
+        for (const key of prefix.split("/").filter(Boolean)) {
+          state = (state as any)[key];
+        }
+
+        return state;
       },
     });
   }
