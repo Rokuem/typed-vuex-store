@@ -1,6 +1,6 @@
 {
   "name": "typed-vuex-store",
-  "version": "2.0.5",
+  "version": "2.0.6-beta.0",
   "description": "A easy and typeSafe way to use vuex",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
