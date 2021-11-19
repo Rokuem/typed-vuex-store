@@ -3,7 +3,7 @@ import path from "path";
 
 export const webpackConfig: Configuration = {
   entry: {
-    main: path.resolve(__dirname, "./src/index.ts"),
+    index: path.resolve(__dirname, "./src/index.ts"),
   },
   externals: ["vue", "vuex"],
   mode: "production",

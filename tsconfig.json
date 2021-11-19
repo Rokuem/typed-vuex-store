@@ -5,10 +5,15 @@
     "sourceMap": true /* Generates corresponding '.map' file. */,
     "outDir": "dist" /* Redirect output structure to the directory. */,
     "strict": true /* Enable all strict type-checking options. */,
-    "rootDir": ".",
+    "rootDir": "src",
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
-    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "noErrorTruncation": true,
+    "pretty": true,
+    "target": "es5",
   },
   "include": ["./src/*.ts"],
   "exclude": ["node_modules"]
