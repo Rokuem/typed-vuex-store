@@ -63,11 +63,17 @@ class TypedVuexStoreConstructor<O extends StoreOptions<any>> {
     Object.defineProperty(target, "state", {
       get: () => {
         let state = this.store.state;
+        console.log({ state });
 
         if (!prefix) return state;
 
-        for (const key of prefix.split("/").filter(Boolean)) {
+        const moduleKeys = prefix.split("/").filter(Boolean);
+
+        console.log({ moduleKeys });
+
+        for (const key of moduleKeys) {
           state = (state as any)[key];
+          console.log({ state, key });
         }
 
         return state;
