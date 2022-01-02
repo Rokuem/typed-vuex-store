@@ -1,6 +1,6 @@
 {
   "name": "typed-vuex-store",
-  "version": "2.0.6",
+  "version": "2.0.7-beta-1",
   "description": "A easy and typeSafe way to use vuex",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
@@ -32,10 +32,10 @@
     "ts-jest": "^26.1.4",
     "ts-loader": "^7.0.1",
     "ts-node": "^8.6.2",
-    "typescript": "^4.0.0-dev.20200728",
+    "typescript": "^4.5.4",
     "vue": "^3.2.22",
     "vuex": "^4.0.2",
-    "webpack": "^4.41.5",
+    "webpack": "^5.65.0",
     "webpack-cli": "^3.3.10"
   },
   "peerDependencies": {
