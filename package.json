@@ -1,15 +1,17 @@
 {
   "name": "typed-vuex-store",
-  "version": "2.0.7-beta-2",
+  "version": "2.0.7-beta-3",
   "description": "A easy and typeSafe way to use vuex",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
+  "module": "./dist/index.esm.js",
+  "jsnext:main": "dist/index.jsnext.js",
   "files": [
     "/dist",
     "/src"
   ],
   "scripts": {
-    "prepublish": "webpack"
+    "prepublish": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript"
   },
   "repository": {
     "type": "git",
@@ -24,11 +26,13 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.0",
     "@types/jest": "^26.0.7",
     "@types/webpack": "^5.28.0",
     "declaration-bundler-webpack-plugin": "^1.0.3",
     "expect-type": "^0.7.9",
     "jest": "^26.1.0",
+    "rollup": "^2.62.0",
     "ts-jest": "^26.1.4",
     "ts-loader": "^7.0.1",
     "ts-node": "^8.6.2",
@@ -39,8 +43,12 @@
     "webpack-cli": "^3.3.10"
   },
   "peerDependencies": {
-    "vue": "2.x",
-    "vuex": "3.x"
+    "vuex": "3.x.x"
+  },
+  "peerDependenciesMeta": {
+    "vuex": {
+      "optional": false
+    }
   },
   "dependencies": {
     "tslib": "^2.3.1"
