@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "es5",                          
+    "module": "esnext",
     "declaration": true /* Generates corresponding '.d.ts' file. */,
     "sourceMap": true /* Generates corresponding '.map' file. */,
     "outDir": "dist" /* Redirect output structure to the directory. */,
@@ -13,7 +14,6 @@
     "importHelpers": true,
     "noErrorTruncation": true,
     "pretty": true,
-    "target": "es5",
   },
   "include": ["./src/*.ts"],
   "exclude": ["node_modules"]
