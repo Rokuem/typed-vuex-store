@@ -16,10 +16,12 @@ const options = {
     {
       file: "dist/index.cjs",
       format: "esm",
+      sourcemap: true,
     },
     {
       file: "dist/index.mjs",
       format: "esm",
+      sourcemap: true,
     },
   ],
   external: externals,

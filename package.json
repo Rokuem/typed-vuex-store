@@ -10,7 +10,7 @@
     "/src"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "rollup -c rollup.config.js"
   },
   "repository": {
     "type": "git",
