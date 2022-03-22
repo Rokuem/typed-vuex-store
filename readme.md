@@ -21,7 +21,7 @@ A simple solution for vuex and typescript. Typed-vuex-store converts all the sto
 Provided that all the options have inferred types, all you need to do is setup the store like this:
 
 ```typescript
-import { TypedVuexStore } from 'typed-vuex-store';
+import { TypedVuexStore } from "typed-vuex-store";
 
 export const storeApi = new TypedVuexStore({
   state,
@@ -60,7 +60,7 @@ When using things like MutationTree, ActionTree or GetterTree in a `const myVar:
 To help with that, you can use a function:
 
 ```typescript
-import { MutationTree } from 'vuex';
+import { MutationTree } from "vuex";
 
 const createMutations = <
   T extends MutationTree<typeof state, typeof rootState>
@@ -76,18 +76,3 @@ const mutations = createMutations({
 This will make sure the mutations are ok to be used for the typed store api.
 
 you can also do something similar for the actions and getters.
-
-## V1 Changes
-
-- Added tests
-- Fixed namespaced modules logic.
-- Fixed Promise type for actions.
-- Fixed typing of submodules.
-- Adjusted the `store.mutations.module.mutation` format to `store.module.mutations.mutation` to make it easier to use (same thing for state, actions and getters).
-- Modules are accessed directly from the store now.
-
-## V1.1 Changes
-
-- Improve tests.
-- Add better payload resolution.
-- Fix typos in the documentation.
