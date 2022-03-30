@@ -9,13 +9,15 @@ const dtsOptions = {
   plugins: [dts()],
   external: externals,
 };
-
+/**
+ * @type {import('rollup').RollupOptions}
+ */
 const options = {
   input: "src/index.ts",
   output: [
     {
       file: "dist/index.cjs",
-      format: "esm",
+      format: "cjs",
       sourcemap: true,
     },
     {
